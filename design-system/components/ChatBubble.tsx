@@ -3,7 +3,6 @@ import React from 'react';
 
 // Importa componentes do React Native
 import { View, Text, StyleSheet } from 'react-native';
-
 // Importa tokens de cores
 import { Colors } from '../tokens/colors';
 
@@ -169,13 +168,13 @@ const styles = StyleSheet.create({
 
   // Timestamp do usuário
   userTimestamp: {
-    color: 'rgba(255, 255, 255, 0.7)', // Branco com transparência
+    color: Colors.chat.timestamp, // Branco com transparência
     textAlign: 'right',                // Alinhado à direita
   },
 
   // Timestamp de outro usuário
   otherTimestamp: {
-    color: Colors.textTertiary,        // Cor discreta
+    color: Colors.chat.timestamp,        // Cor discreta
     textAlign: 'left',                 // Alinhado à esquerda
   },
 });

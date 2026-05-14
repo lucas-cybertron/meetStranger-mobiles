@@ -35,5 +35,14 @@ export const searchingStyles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '700',
     },
+    loadingImage: {
+        width: 150,
+        height: 150,
 
+        shadowColor: '#FF00AA',
+        shadowOpacity: 0.6,
+        shadowRadius: 25,
+
+        elevation: 12,
+    },
 });

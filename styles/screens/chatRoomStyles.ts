@@ -42,7 +42,7 @@ export const chatRoomStyles = StyleSheet.create({
 
   headerButtonText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '700',
   },
 
@@ -75,8 +75,7 @@ export const chatRoomStyles = StyleSheet.create({
   // INPUT AREA
   inputContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
-    width: "auto",
+    alignItems: 'center',
 
     gap: 5,
   },
@@ -90,7 +89,7 @@ export const chatRoomStyles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#D4145A',
     shadowColor: '#D4145A',
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.45,
     shadowRadius: 12,
     shadowOffset: {
       width: 0,

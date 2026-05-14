@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     color: '#AAAACC',
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.md,
   },
 
   labelFocused: {

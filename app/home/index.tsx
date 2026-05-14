@@ -18,28 +18,29 @@ const categories = [
     {
         id: 'movies',
         title: 'Films',
-        icon: '🎬',
+        image: require('../../assets/movies.png'),
     },
     {
         id: 'books',
         title: 'Books',
-        icon: '📚',
+        image: require('../../assets/books.png'),
     },
     {
         id: 'music',
         title: 'Music',
-        icon: '🎧',
+        image: require('../../assets/music.png'),
     },
     {
         id: 'games',
         title: 'Games',
-        icon: '🎮',
+        image: require('../../assets/games.png'),
     },
 ];
 
 export default function HomeScreen() {
 
     const router = useRouter();
+
     const [menuOpen, setMenuOpen] = useState(false);
 
     const dropdownHeight = useRef(
@@ -53,36 +54,35 @@ export default function HomeScreen() {
     const [selectedCategory, setSelectedCategory] =
         useState('movies');
 
-const toggleMenu = () => {
+    const toggleMenu = () => {
 
-    const toHeight = menuOpen ? 0 : 120;
+        const toHeight = menuOpen ? 0 : 120;
 
-    const toOpacity = menuOpen ? 0 : 1;
+        const toOpacity = menuOpen ? 0 : 1;
 
-    Animated.parallel([
+        Animated.parallel([
 
-        Animated.timing(dropdownHeight, {
-            toValue: toHeight,
-            duration: 250,
-            useNativeDriver: false,
-        }),
+            Animated.timing(dropdownHeight, {
+                toValue: toHeight,
+                duration: 250,
+                useNativeDriver: false,
+            }),
 
-        Animated.timing(dropdownOpacity, {
-            toValue: toOpacity,
-            duration: 200,
-            useNativeDriver: false,
-        }),
+            Animated.timing(dropdownOpacity, {
+                toValue: toOpacity,
+                duration: 200,
+                useNativeDriver: false,
+            }),
 
-    ]).start();
+        ]).start();
 
-    setMenuOpen(!menuOpen);
-};
-
+        setMenuOpen(!menuOpen);
+    };
 
     const handleNavigate = () => {
 
         router.push({
-            pathname: '/chat/room',
+            pathname: '/chat/searching',
             params: {
                 category: selectedCategory,
             },
@@ -99,29 +99,59 @@ const toggleMenu = () => {
             ]}
             style={styles.container}
         >
-           
-           <Animated.View style={[ styles.dropdownMenu, { height: dropdownHeight, opacity: dropdownOpacity, }, ]} > 
-            <TouchableOpacity style={styles.dropdownItem}> 
-                <Text style={styles.dropdownText}> ⚙ Settings </Text> 
-                </TouchableOpacity> 
-               
-            <TouchableOpacity
-                style={styles.dropdownItem}
-                onPress={() => router.push('/about')}
+
+            {/* MENU DROPDOWN */}
+            <Animated.View
+                style={[
+                    styles.dropdownMenu,
+                    {
+                        height: dropdownHeight,
+                        opacity: dropdownOpacity,
+                    },
+                ]}
             >
 
-                <Text style={styles.dropdownText}>
-                    ℹ About
-                </Text>
+                <TouchableOpacity style={styles.dropdownItem}
+                    onPress={() =>
+                        router.push({
+                            pathname: '/settings',
+                        })
+                    }>
 
-            </TouchableOpacity>
+                    <Text style={styles.dropdownText}>
+                        Settings
+                    </Text>
+
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.dropdownItem}
+                    onPress={() =>
+                        router.push({
+                            pathname: '/about',
+                        })
+                    }
+                >
+
+                    <Text style={styles.dropdownText}>
+                        About
+                    </Text>
+
+                </TouchableOpacity>
 
             </Animated.View>
 
+            {/* MENU BUTTON */}
+            <TouchableOpacity
+                style={styles.menuButton}
+                onPress={toggleMenu}
+            >
 
+                <Text style={styles.menuIcon}>
+                    ☰
+                </Text>
 
-            {/* MENU */}
-           <TouchableOpacity style={styles.menuButton} onPress={toggleMenu} > <Text style={styles.menuIcon}> ☰ </Text> </TouchableOpacity>
+            </TouchableOpacity>
 
             {/* LOGO */}
             <View style={styles.logoContainer}>
@@ -145,7 +175,7 @@ const toggleMenu = () => {
                 Choose the topic
             </Text>
 
-            {/* CATEGORIES */}
+            {/* CATEGORY GRID */}
             <View style={styles.grid}>
 
                 {categories.map((item) => {
@@ -163,6 +193,7 @@ const toggleMenu = () => {
                             }
                             style={[
                                 styles.categoryWrapper,
+
                                 isSelected &&
                                 styles.categorySelected,
                             ]}
@@ -176,13 +207,19 @@ const toggleMenu = () => {
                                 style={styles.categoryCard}
                             >
 
-                                <Text style={styles.categoryIcon}>
-                                    {item.icon}
-                                </Text>
+                                <View style={styles.categoryContent}>
 
-                                <Text style={styles.categoryText}>
-                                    {item.title}
-                                </Text>
+                                    <Image
+                                        source={item.image}
+                                        style={styles.categoryImage}
+                                        resizeMode="contain"
+                                    />
+
+                                    <Text style={styles.categoryText}>
+                                        {item.title}
+                                    </Text>
+
+                                </View>
 
                             </LinearGradient>
 
@@ -192,7 +229,7 @@ const toggleMenu = () => {
 
             </View>
 
-            {/* BUTTON */}
+            {/* CHAT BUTTON */}
             <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={handleNavigate}
@@ -219,3 +256,4 @@ const toggleMenu = () => {
         </LinearGradient>
     );
 }
+

@@ -110,15 +110,10 @@ export const homeStyles = StyleSheet.create({
     categoryWrapper: {
         width: '47%',
         borderRadius: 24,
+        overflow: 'visible',
     },
 
-    categorySelected: {
-        shadowColor: '#FFFFFF',
-        shadowOpacity: 0.6,
-        shadowRadius: 14,
-
-        elevation: 8,
-    },
+    categorySelected: { transform: [ { scale: 1.03, }, ], borderWidth: 2, borderColor: '#FFFFFF', shadowColor: '#FFFFFF', shadowOpacity: 0.5, shadowRadius: 14, elevation: 12, },
 
     categoryCard: {
         height: 120,
@@ -138,6 +133,7 @@ export const homeStyles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 18,
         fontWeight: '800',
+        textAlign: 'center',
     },
 
     // BUTTON
@@ -159,5 +155,10 @@ export const homeStyles = StyleSheet.create({
 
         textTransform: 'lowercase',
     },
+    categoryContent: {
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+    categoryImage: { width: 90, height: 90, marginBottom: 5, },
 
 });

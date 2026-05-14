@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
+
 import { LinearGradient } from "expo-linear-gradient";
+
 import {
     View,
     Text,
@@ -9,42 +11,69 @@ import {
     Platform,
 } from "react-native";
 
-import { useRouter, useLocalSearchParams } from "expo-router";
+import {
+    useRouter,
+    useLocalSearchParams,
+} from "expo-router";
 
 import { useChat } from "../../hooks/useChat";
 
 import { ChatMessage } from "../../components/chatMessage";
+
 import { Input } from "../../components/input";
 
-import { chatRoomStyles as styles } from "../../styles/screens/chatRoomStyles";
+import { ReportModal }
+from "../../components/reportModal";
+
+import {
+    chatRoomStyles as styles,
+} from "../../styles/screens/chatRoomStyles";
 
 const categories = [
-    { id: 'movies', name: 'Filmes', icon: '🎬' },
-    { id: 'games', name: 'Jogos', icon: '🎮' },
-    { id: 'series', name: 'Séries', icon: '📺' },
+    {
+        id: 'movies',
+        name: 'Filmes',
+        icon: '🎬',
+    },
+    {
+        id: 'games',
+        name: 'Jogos',
+        icon: '🎮',
+    },
+    {
+        id: 'series',
+        name: 'Séries',
+        icon: '📺',
+    },
 ];
 
 export default function ChatRoom() {
 
     const router = useRouter();
 
-    const { category } = useLocalSearchParams<{ category: string }>();
+    const { category } =
+        useLocalSearchParams<{
+            category: string
+        }>();
 
     const categoryInfo = categories.find(
         (cat) => cat.id === category
     );
 
-    const [inputText, setInputText] = useState('');
+    const [inputText, setInputText] =
+        useState('');
 
-    const flatListRef = useRef<FlatList>(null);
+    const [reportVisible, setReportVisible] =
+        useState(false);
+
+    const flatListRef =
+        useRef<FlatList>(null);
 
     const {
         messages,
         isConnected,
-        isMatching,
         partnerName,
         sendMessage,
-        findNewPartner,
     } = useChat(category || 'movies');
 
     useEffect(() => {
@@ -64,133 +93,231 @@ export default function ChatRoom() {
 
     const handleSendMessage = () => {
 
-        if (inputText.trim() === '') return;
+        if (inputText.trim() === '')
+            return;
 
         sendMessage(inputText);
 
         setInputText('');
     };
-const fakeMessages = [ { id: '1', text: 'olá como você está ??', isUser: false, timestamp: new Date(), UserName: 'Parceiro', }, { id: '2', text: 'Bem e você???', isUser: true, timestamp: new Date(), UserName: 'Você', }, { id: '3', text: 'Estou testando os balões do FlavoMe 😮‍💨', isUser: false, timestamp: new Date(), UserName: 'Parceiro', }, ];
-
 
     return (
-        <LinearGradient colors={[ '#580821', '#cb0e4a', '#2922b0', '#3e36eb', '#5035d8', ]} start={{ x: 1, y: 1 }} end={{ x: 0, y: 0 }} style={{ flex: 1 }} >
 
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={
-                Platform.OS === 'android' ? 85 : 0
-            }
+        <LinearGradient
+            colors={[
+                '#580821',
+                '#cb0e4a',
+                '#2922b0',
+                '#3e36eb',
+                '#5035d8',
+            ]}
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0 }}
+            style={{ flex: 1 }}
         >
 
-            <View style={styles.content}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={
+                    Platform.OS === 'ios'
+                        ? 'padding'
+                        : 'height'
+                }
+                keyboardVerticalOffset={
+                    Platform.OS === 'android'
+                        ? 85
+                        : 0
+                }
+            >
 
-                {/* HEADER */}
-                <View style={styles.header}>
+                <View style={styles.content}>
 
-                    <TouchableOpacity
-                        style={styles.headerButton}
-                        onPress={() => router.back()}
-                    >
-                        <Text style={styles.headerButtonText}>
-                            ← Exit
-                        </Text>
-                    </TouchableOpacity>
+                    {/* HEADER */}
+                    <View style={styles.header}>
 
-                    <TouchableOpacity
-                        style={[
-                            styles.headerButton,
-                            styles.reportButton,
-                        ]}
-                    >
-                        <Text style={styles.headerButtonText}>
-                            ⚠ Report
-                        </Text>
-                    </TouchableOpacity>
+                        {/* EXIT */}
+                        <TouchableOpacity
+                            style={styles.headerButton}
+                            onPress={() =>
+                                router.back()
+                            }
+                        >
 
-                    <TouchableOpacity
-                        style={styles.headerButton}
-                        onPress={findNewPartner}
-                    >
-                        <Text style={styles.headerButtonText}>
-                            🔄 Change
-                        </Text>
-                    </TouchableOpacity>
+                            <Text style={styles.headerButtonText}>
+                                ← Exit
+                            </Text>
 
-                </View>
+                        </TouchableOpacity>
 
-                {/* INFO */}
-                <View style={styles.chatInfo}>
+                        {/* REPORT */}
+                        <TouchableOpacity
+                            style={[
+                                styles.headerButton,
+                                styles.reportButton,
+                            ]}
+                            onPress={() =>
+                                setReportVisible(true)
+                            }
+                        >
 
-                    <Text style={styles.chatTitle}>
-                        {categoryInfo?.icon} {categoryInfo?.name}
-                    </Text>
+                            <Text style={styles.headerButtonText}>
+                                ⚠ Report
+                            </Text>
 
-                    <Text style={styles.chatStatus}>
-                        {
-                            isConnected
-                                ? `Connected with ${partnerName}`
-                                : ''
-                        }
-                    </Text>
-                
-                </View>
+                        </TouchableOpacity>
 
-                {/* MESSAGES */}
-                <FlatList
-                    ref={flatListRef}
-                    data={fakeMessages}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <ChatMessage message={item} />
-                    )}
-                    contentContainerStyle={styles.messagesContainer}
-                    showsVerticalScrollIndicator={false}
-                />
+                        {/* CHANGE */}
+                        <TouchableOpacity
+                            style={styles.headerButton}
+                            onPress={() => {
 
-                {/* INPUT AREA */}
-                <View style={styles.inputContainer}>
+                                router.replace({
+                                    pathname:
+                                        '/chat/searching',
 
-                    <View style={{ flex: 1 }}>
+                                    params: {
+                                        category,
+                                    },
+                                });
 
-                        <Input
-                            value={inputText}
-                            onChangeText={setInputText}
-                            placeholder="Write a message..."
-                            multiline
-                            maxLength={500}
-                        />
+                            }}
+                        >
+
+                            <Text style={styles.headerButtonText}>
+                                🔄 Change
+                            </Text>
+
+                        </TouchableOpacity>
 
                     </View>
 
-                    <TouchableOpacity
-                        style={[
-                            styles.sendButton,
-                            !isConnected ||
-                            inputText.trim() === ''
-                                ? styles.sendButtonDisabled
-                                : undefined,
-                        ]}
-                        onPress={handleSendMessage}
-                        disabled={
-                            !isConnected ||
-                            inputText.trim() === ''
-                        }
-                    >
+                    {/* INFO */}
+                    <View style={styles.chatInfo}>
 
-                        <Text style={styles.sendButtonText}>
-                            ➤
+                        <Text style={styles.chatTitle}>
+                            {categoryInfo?.icon}
+                            {' '}
+                            {categoryInfo?.name}
                         </Text>
 
-                    </TouchableOpacity>
+                        <Text style={styles.chatStatus}>
+
+                            {
+                                isConnected
+                                    ? `Connected with ${partnerName}`
+                                    : ''
+                            }
+
+                        </Text>
+
+                    </View>
+
+                    {/* MESSAGES */}
+                    <FlatList
+                        ref={flatListRef}
+
+                        data={messages}
+
+                        keyExtractor={(item) =>
+                            item.id
+                        }
+
+                        renderItem={({ item }) => (
+                            <ChatMessage
+                                message={item}
+                            />
+                        )}
+
+                        contentContainerStyle={
+                            styles.messagesContainer
+                        }
+
+                        showsVerticalScrollIndicator={
+                            false
+                        }
+                    />
+
+                    {/* INPUT */}
+                    <View style={styles.inputContainer}>
+
+                        <View style={{ flex: 1 }}>
+
+                            <Input
+                                value={inputText}
+
+                                onChangeText={
+                                    setInputText
+                                }
+
+                                placeholder="Write a message..."
+
+                                multiline
+
+                                maxLength={500}
+                            />
+
+                        </View>
+
+                        <TouchableOpacity
+                            style={[
+                                styles.sendButton,
+
+                                !isConnected ||
+                                inputText.trim() === ''
+                                    ? styles.sendButtonDisabled
+                                    : undefined,
+                            ]}
+
+                            onPress={
+                                handleSendMessage
+                            }
+
+                            disabled={
+                                !isConnected ||
+                                inputText.trim() === ''
+                            }
+                        >
+
+                            <Text style={styles.sendButtonText}>
+                                ➤
+                            </Text>
+
+                        </TouchableOpacity>
+
+                    </View>
 
                 </View>
 
-            </View>
+                {/* REPORT MODAL */}
+                <ReportModal
+                    visible={reportVisible}
 
-        </KeyboardAvoidingView>
+                    onClose={() =>
+                        setReportVisible(false)
+                    }
+
+                    onSubmit={(reason) => {
+
+                        console.log(
+                            'User reported:',
+                            reason
+                        );
+
+                        setReportVisible(false);
+
+                        router.replace({
+                            pathname:
+                                '/chat/searching',
+
+                            params: {
+                                category,
+                            },
+                        });
+                    }}
+                />
+
+            </KeyboardAvoidingView>
+
         </LinearGradient>
     );
 }
-

@@ -22,5 +22,6 @@ export const colors = {
         otherBubble: '#e5e7eb',
         userText: '#ffffff',
         otherText: '#1f2937',
+
     }
 }

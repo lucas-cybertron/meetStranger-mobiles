@@ -24,6 +24,7 @@ export interface ColorTokens {
     otherBubble: string;  // Bolha do outro usuário
     userText: string;     // Texto do usuário
     otherText: string;    // Texto do outro usuário
+    timestamp: string;
   };
 }
 
@@ -62,12 +63,12 @@ export const darkTheme: ColorTokens = {
   overlay: 'rgba(0, 0, 0, 0.6)',
 
   // Cores do chat no dark
-  chat: {
-    userBubble: '#60A5FA', // Azul claro
-    otherBubble: '#374151',// Cinza escuro
-    userText: '#111827',   // Texto escuro
-    otherText: '#F9FAFB',  // Texto claro
-  }
+  chat: { // SUA mensagem 
+   userBubble: '#7B2FFF', // Mensagem do parceiro 
+   otherBubble: 'rgba(255,255,255,0.10)', // Texto da sua mensagem 
+   userText: '#FFFFFF', // Texto do parceiro 
+   otherText: '#F8FAFC', // Horário
+   timestamp: '#D6DCFF', }
 };
 
 // Exporta o tema padrão da aplicação

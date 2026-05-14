@@ -1,6 +1,9 @@
+import React, { useEffect, useRef } from 'react';
+
 import {
     Text,
-    ActivityIndicator,
+    Animated,
+    Easing,
     TouchableOpacity,
 } from 'react-native';
 
@@ -14,6 +17,17 @@ export default function SearchingScreen() {
 
     const router = useRouter();
 
+    const rotateAnim = useRef(
+        new Animated.Value(0)
+    ).current;
+
+    useEffect(() => { rotateAnim.setValue(0); Animated.loop( Animated.timing(rotateAnim, { toValue: 1, duration: 4000, easing: Easing.linear, useNativeDriver: false, }), { resetBeforeIteration: true, } ).start(); }, []);
+
+    const rotate = rotateAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
+
     return (
 
         <LinearGradient
@@ -24,29 +38,38 @@ export default function SearchingScreen() {
                 '#3e36eb',
                 '#5035d8',
             ]}
-            start={{ x: 1, y: 1 }} end={{ x: 0, y: 0 }}
+           start={{ x: 1, y: 1 }} end={{ x: 0, y: 0 }}
             style={styles.container}
         >
 
-            <ActivityIndicator
-                size="large"
-                color="#FFFFFF"
+
+            {/* CAMALEÃO */}
+            <Animated.Image
+                source={require('../../assets/circulo.png')}
+                resizeMode="contain"
+                style={[
+                    styles.loadingImage,
+                    {
+                        transform: [{ rotate }],
+                    },
+                ]}
             />
 
+            {/* TEXTO */}
             <Text style={styles.title}>
                 Searching Partner...
             </Text>
-
-            <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => router.back()}
-            >
-
-                <Text style={styles.cancelButtonText}>
-                    ← Cancel Search
-                </Text>
-
-            </TouchableOpacity>
+                    {/* BOTÃO SAIR */}
+                    <TouchableOpacity
+                        style={styles.cancelButton}
+                        onPress={() => router.back()}
+                    >
+        
+                        <Text style={styles.cancelButtonText}>
+                            ← Cancel
+                        </Text>
+        
+                    </TouchableOpacity>
 
         </LinearGradient>
     );
