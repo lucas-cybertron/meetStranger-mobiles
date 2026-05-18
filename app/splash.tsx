@@ -1,167 +1,217 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
-    View,
-    Text,
-    ActivityIndicator,
-    Image,
+  View,
+  Text,
+  ActivityIndicator,
+  Image,
 } from 'react-native';
 
-import { LinearGradient }
-from 'expo-linear-gradient';
-
-import { useRouter }
-from 'expo-router';
+import {
+  LinearGradient,
+} from 'expo-linear-gradient';
 
 import {
-    splashStyles as styles,
+  useRouter,
+} from 'expo-router';
+
+import {
+  splashStyles as styles,
 } from '../styles/screens/splashStyles';
+
+import {
+  apiService,
+} from '../services/api';
 
 export default function Splash() {
 
-    const router = useRouter();
+  const router = useRouter();
 
-    const [backendConnected, setBackendConnected] =
-        useState(false);
+  const [
+    backendConnected,
+    setBackendConnected,
+  ] = useState(false);
 
-    useEffect(() => {
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
-        const connectBackend = async () => {
+  const [
+    navigated,
+    setNavigated,
+  ] = useState(false);
 
-            try {
+  // ====================================
+  // BACKEND CONNECTION
+  // ====================================
 
-                console.log(
-                    'Connecting to backend...'
-                );
+  useEffect(() => {
 
-                // ====================================
-                // TESTE TEMPORÁRIO
-                // ====================================
+    const connectBackend = async () => {
 
-                setTimeout(() => {
+      try {
 
-                    setBackendConnected(true);
+        console.log(
+          'Connecting to backend...',
+        );
 
-                    console.log(
-                        'Backend connected!'
-                    );
+        // TESTA CONEXÃO COM API
+        await apiService.get('/health');
 
-                }, 2000);
+        console.log(
+          'Backend connected!',
+        );
 
-                // ====================================
-                // QUANDO FOR REAL:
-                // ====================================
+        setBackendConnected(true);
 
-                /*
-                await api.get('/health');
+      } catch (error) {
 
-                setBackendConnected(true);
-                */
+        console.log(
+          'Backend connection error:',
+          error,
+        );
 
-            } catch (error) {
+      } finally {
 
-                console.log(
-                    'Backend connection error:',
-                    error
-                );
-            }
-        };
+        setLoading(false);
+      }
+    };
 
-        connectBackend();
+    connectBackend();
 
-    }, []);
+  }, []);
 
-    useEffect(() => {
+  // ====================================
+  // NAVIGATION WHEN CONNECTED
+  // ====================================
 
-        // ====================================
-        // TESTE VISUAL
-        // ====================================
+  useEffect(() => {
 
-        const timer = setTimeout(() => {
+    if (
+      backendConnected &&
+      !navigated
+    ) {
 
-            router.replace('/auth/login');
+      console.log(
+        'Navigating to login...',
+      );
 
-        }, 6000);
+      setNavigated(true);
 
-        return () => clearTimeout(timer);
+      router.replace('/auth/login');
+    }
 
-        // ====================================
-        // PRODUÇÃO
-        // ====================================
+  }, [
+    backendConnected,
+    navigated,
+    router,
+  ]);
 
-        /*
-        if (backendConnected) {
+  // ====================================
+  // FALLBACK TIMEOUT
+  // ====================================
 
-            router.replace('/auth/login');
-        }
-        */
+  useEffect(() => {
 
-    }, [backendConnected]);
+    const timer = setTimeout(() => {
 
-    return (
+      if (!navigated) {
 
-        <LinearGradient
-            colors={[
-                '#050816',
-                '#0B1026',
-                '#1A1040',
-                '#2B1466',
-            ]}
+        console.log(
+          'Fallback navigation triggered',
+        );
 
-            start={{ x: 1, y: 1 }}
-            end={{ x: 0, y: 0 }}
+        setNavigated(true);
 
-            style={styles.container}
-        >
+        router.replace('/auth/login');
+      }
 
-            {/* LOGO AREA */}
-            <View style={styles.logoContainer}>
+    }, 6000);
 
-                <Image
-                    source={require('../assets/flavicon.png')}
-                    resizeMode="contain"
-                    style={styles.logo}
-                />
+    return () => clearTimeout(timer);
 
-                <Image
-                    source={require('../assets/flavletter.png')}
-                    resizeMode="contain"
-                    style={styles.letter}
-                />
+  }, [
+    navigated,
+    router,
+  ]);
 
-            </View>
+  return (
 
-            {/* TITLE */}
-            <Text style={styles.title}>
-                Welcome to FlavoMe
-            </Text>
+    <LinearGradient
+      colors={[
+        '#050816',
+        '#0B1026',
+        '#1A1040',
+        '#2B1466',
+      ]}
 
-            {/* SUBTITLE */}
-            <Text style={styles.subtitle}>
-                Connect with people{'\n'}
-                who share your interests.
-            </Text>
+      start={{
+        x: 1,
+        y: 1,
+      }}
 
-            {/* LOADING */}
-            <View style={styles.loadingContainer}>
+      end={{
+        x: 0,
+        y: 0,
+      }}
 
-                <ActivityIndicator
-                    size="large"
-                    color="#FFFFFF"
-                />
+      style={styles.container}
+    >
 
-                <Text style={styles.loadingText}>
+      {/* LOGO AREA */}
+      <View style={styles.logoContainer}>
 
-                    {
-                        backendConnected
-                            ? 'Connected!'
-                            : 'Connecting server...'
-                    }
+        <Image
+          source={require('../assets/flavicon.png')}
+          resizeMode="contain"
+          style={styles.logo}
+        />
 
-                </Text>
+        <Image
+          source={require('../assets/flavletter.png')}
+          resizeMode="contain"
+          style={styles.letter}
+        />
 
-            </View>
+      </View>
 
-        </LinearGradient>
-    );
+      {/* TITLE */}
+      <Text style={styles.title}>
+        Welcome to FlavoMe
+      </Text>
+
+      {/* SUBTITLE */}
+      <Text style={styles.subtitle}>
+        Connect with people{'\n'}
+        who share your interests.
+      </Text>
+
+      {/* LOADING */}
+      <View style={styles.loadingContainer}>
+
+        <ActivityIndicator
+          size="large"
+          color="#FFFFFF"
+        />
+
+        <Text style={styles.loadingText}>
+
+          {
+            loading
+              ? 'Connecting server...'
+              : backendConnected
+                ? 'Connected!'
+                : 'Server unavailable'
+          }
+
+        </Text>
+
+      </View>
+
+    </LinearGradient>
+  );
 }

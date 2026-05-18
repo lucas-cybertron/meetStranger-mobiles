@@ -1,6 +1,6 @@
 export const API_CONFIG = {
-    BASE_URL: 'MEU SERVIDOR BACKEND',
-    SOCKET_URL: 'MEU SERVIDOR BACKEND PARA WEBSOCKET SEM PREFIXO API',
+    BASE_URL: 'https://backend-meetstranger-mobiles.onrender.com/api',
+    SOCKET_URL: 'https://meetstrage-app-backend.onrender.com',
     TIMEOUT: 60000, // 60 segundos
 }
 
