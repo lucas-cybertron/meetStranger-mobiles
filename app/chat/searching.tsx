@@ -8,7 +8,6 @@ import {
   Animated,
   Easing,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 
 import {
@@ -25,6 +24,10 @@ import {
 } from '../../styles/screens/searchingStyles';
 
 import {
+  useChat,
+} from '../../hooks/useChat';
+
+import {
   webSocket,
 } from '../../services/websocket';
 
@@ -33,7 +36,7 @@ export default function SearchingScreen() {
   const router = useRouter();
 
   // ====================================
-  // CATEGORY PARAM
+  // CATEGORY
   // ====================================
 
   const {
@@ -41,6 +44,36 @@ export default function SearchingScreen() {
   } = useLocalSearchParams<{
     category: string;
   }>();
+
+  // ====================================
+  // CHAT HOOK
+  // ====================================
+
+  const {
+    isConnected,
+    isMatching,
+    partnerName,
+    currentRoomId,
+  } = useChat(
+    String(category),
+  );
+
+  // ====================================
+  // START MATCHMAKING
+  // ====================================
+
+  useEffect(() => {
+
+    console.log(
+      '🔍 Starting matchmaking:',
+      category,
+    );
+
+    webSocket.findMatch(
+      String(category),
+    );
+
+  }, []);
 
   // ====================================
   // ANIMATION
@@ -89,94 +122,27 @@ export default function SearchingScreen() {
     });
 
   // ====================================
-  // MATCHMAKING
+  // NAVIGATION
   // ====================================
 
   useEffect(() => {
 
-    const connectSocket = async () => {
+    if (!currentRoomId) return;
 
-      try {
+    console.log(
+      'Navigating to room:',
+      currentRoomId,
+    );
 
-        console.log(
-          'Connecting websocket...',
-        );
+    router.replace({
+      pathname: '/chat/room',
+      params: {
+        roomId: currentRoomId,
+        category: String(category),
+      },
+    });
 
-        // CONNECT
-        await webSocket.connect();
-
-        console.log(
-          'WebSocket connected!',
-        );
-
-        // START MATCH SEARCH
-        webSocket.findMatch(
-          String(category),
-        );
-
-        console.log(
-          'Searching category:',
-          category,
-        );
-
-        // MATCH FOUND
-        webSocket.onMatchFound(
-          (data: any) => {
-
-            console.log(
-              'MATCH FOUND:',
-              data,
-            );
-
-            router.replace({
-
-              pathname:
-                '/chat/room',
-
-              params: {
-                roomId:
-                  data.roomId,
-              },
-            });
-          },
-        );
-
-      } catch (error) {
-
-        console.log(
-          'MATCH ERROR:',
-          error,
-        );
-
-        Alert.alert(
-          'Connection Error',
-          'Could not connect to server.',
-        );
-
-        router.back();
-      }
-    };
-
-    connectSocket();
-
-    // ====================================
-    // CLEANUP
-    // ====================================
-
-    return () => {
-
-      console.log(
-        'Leaving matchmaking...',
-      );
-
-      webSocket.cancelMatch();
-
-      webSocket.removeAllListeners();
-
-      webSocket.disconnect();
-    };
-
-  }, []);
+  }, [currentRoomId]);
 
   // ====================================
   // UI
@@ -224,10 +190,21 @@ export default function SearchingScreen() {
 
       {/* TITLE */}
       <Text style={styles.title}>
-        Searching Partner...
+
+        {
+          isMatching
+            ? 'Searching Partner...'
+            : 'Partner Found!'
+        }
+
       </Text>
 
-      {/* CANCEL BUTTON */}
+      {/* PARTNER */}
+      <Text>
+        {partnerName}
+      </Text>
+
+      {/* CANCEL */}
       <TouchableOpacity
         style={styles.cancelButton}
 
@@ -235,7 +212,7 @@ export default function SearchingScreen() {
 
           webSocket.cancelMatch();
 
-          router.back();
+          router.replace('/home');
         }}
       >
 
