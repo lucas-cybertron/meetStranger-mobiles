@@ -74,7 +74,7 @@ export default function ChatRoom() {
     partnerName,
     currentRoomId,
     sendMessage,
-  } = useChat(category || 'movies');
+  } = useChat(category || 'movies', roomId);
 
   useEffect(() => {
     console.log('ROOM LOADED:', {
