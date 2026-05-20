@@ -17,6 +17,7 @@ import {
 } from 'expo-router';
 
 import { useChat } from '../../hooks/useChat';
+import { apiService } from '../../services/api';
 
 import { ChatMessage } from '../../components/chatMessage';
 
@@ -71,6 +72,7 @@ export default function ChatRoom() {
     messages,
     isConnected,
     partnerName,
+    currentRoomId,
     sendMessage,
   } = useChat(category || 'movies');
 
@@ -234,12 +236,17 @@ export default function ChatRoom() {
         <ReportModal
           visible={reportVisible}
           onClose={() => setReportVisible(false)}
-          onSubmit={(reason) => {
-            console.log('User reported:', reason);
-
-            setReportVisible(false);
-
-            handleChangePartner();
+          onSubmit={async (reason) => {
+            try {
+              if (currentRoomId) {
+                await apiService.reportUser(currentRoomId, reason);
+              }
+            } catch (error) {
+              console.error('Report failed:', error);
+            } finally {
+              setReportVisible(false);
+              handleChangePartner();
+            }
           }}
         />
 

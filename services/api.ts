@@ -195,7 +195,7 @@ class ApiService {
         success: boolean;
         data: any;
       }>(
-        '/users/profile',
+        '/auth/profile',
       );
 
     return response.data;
@@ -286,6 +286,17 @@ class ApiService {
       );
 
     return response.data;
+  }
+
+  async reportUser(roomId: string, reason: string, reportedUserId?: string) {
+    const response = await this.request<{ success: boolean; message: string }>(
+      `/chat/rooms/${roomId}/report`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ reason, reportedUserId }),
+      },
+    );
+    return response;
   }
 }
 

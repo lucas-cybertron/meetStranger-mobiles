@@ -70,7 +70,7 @@ export function useChat(category: string) {
     const initializeWebSocket = async () => {
       try {
         // Conecta ao WebSocket apenas se ainda não estiver conectado
-        if (!webSocket.connect) {
+        if (!webSocket.connected) {
           await webSocket.connect();
         }
         

@@ -22,14 +22,9 @@ const categories = [
         image: require('../../assets/movies.png'),
     },
     {
-        id: 'books',
+        id: 'series',
         title: 'Books',
         image: require('../../assets/books.png'),
-    },
-    {
-        id: 'music',
-        title: 'Music',
-        image: require('../../assets/music.png'),
     },
     {
         id: 'games',
