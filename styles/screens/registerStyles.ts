@@ -1,6 +1,7 @@
 import {
   StyleSheet,
   Dimensions,
+  Platform,
 } from 'react-native';
 
 import {
@@ -18,6 +19,31 @@ const {
   width,
   height,
 } = Dimensions.get('window');
+
+// ====================================
+// RESPONSIVE HELPERS
+// ====================================
+
+const isSmallDevice =
+  width < 380;
+
+const isTablet =
+  width >= 768;
+
+const responsiveWidth = (
+  mobile: number,
+  tablet?: number,
+) => {
+
+  if (
+    isTablet &&
+    tablet
+  ) {
+    return tablet;
+  }
+
+  return mobile;
+};
 
 export const registerStyles =
   StyleSheet.create({
@@ -48,17 +74,17 @@ export const registerStyles =
       alignItems: 'center',
 
       paddingTop:
-        height * 0.10,
+        isSmallDevice
+          ? height * 0.06
+          : height * 0.09,
 
       paddingHorizontal:
-        Spacing.xl,
+        isTablet
+          ? Spacing['4xl']
+          : Spacing.xl,
 
       paddingBottom:
         Spacing['4xl'],
-
-      // ====================================
-      // FLAVOME STYLE
-      // ====================================
 
       backgroundColor:
         'rgba(25,15,60,0.72)',
@@ -67,10 +93,6 @@ export const registerStyles =
         BorderRadius['2xl'],
 
       overflow: 'hidden',
-
-      // ====================================
-      // NEON GLOW
-      // ====================================
 
       ...Shadows.xl,
 
@@ -87,9 +109,17 @@ export const registerStyles =
     // ====================================
 
     logo: {
-      width: width * 0.50,
+      width:
+        responsiveWidth(
+          width * 0.42,
+          260,
+        ),
 
-      height: width * 0.50,
+      height:
+        responsiveWidth(
+          width * 0.42,
+          260,
+        ),
 
       marginBottom:
         Spacing.sm,
@@ -114,7 +144,10 @@ export const registerStyles =
     },
 
     brandUnderline: {
-      width: 90,
+      width:
+        isSmallDevice
+          ? 70
+          : 90,
 
       height: 4,
 
@@ -135,6 +168,20 @@ export const registerStyles =
 
     title: {
       ...TextStyles.h1,
+
+      fontSize:
+        isSmallDevice
+          ? 28
+          : isTablet
+            ? 42
+            : 34,
+
+      lineHeight:
+        isSmallDevice
+          ? 34
+          : isTablet
+            ? 48
+            : 40,
 
       color: '#FFFFFF',
 
@@ -163,7 +210,10 @@ export const registerStyles =
     // ====================================
 
     inputContainer: {
-      width: '100%',
+      width:
+        isTablet
+          ? '70%'
+          : '100%',
 
       gap: Spacing.md,
 
@@ -178,7 +228,10 @@ export const registerStyles =
     dateLabel: {
       color: '#C4B5FD',
 
-      fontSize: 13,
+      fontSize:
+        isSmallDevice
+          ? 12
+          : 13,
 
       width: '100%',
 
@@ -224,7 +277,7 @@ export const registerStyles =
     termsRow: {
       flexDirection: 'row',
 
-      alignItems: 'center',
+      alignItems: 'flex-start',
 
       width: '100%',
 
@@ -238,9 +291,17 @@ export const registerStyles =
     },
 
     checkbox: {
-      width: 20,
+      width:
+        isSmallDevice
+          ? 18
+          : 20,
 
-      height: 20,
+      height:
+        isSmallDevice
+          ? 18
+          : 20,
+
+      marginTop: 2,
 
       borderWidth: 1.5,
 
@@ -273,11 +334,19 @@ export const registerStyles =
     },
 
     termsText: {
+      flex: 1,
+
       color: '#C4B5FD',
 
-      fontSize: 12,
+      fontSize:
+        isSmallDevice
+          ? 11
+          : 12,
 
-      flex: 1,
+      lineHeight:
+        isSmallDevice
+          ? 16
+          : 18,
 
       opacity:
         Opacity.subtle,
@@ -290,7 +359,10 @@ export const registerStyles =
     errorText: {
       color: '#FF4D8D',
 
-      fontSize: 14,
+      fontSize:
+        isSmallDevice
+          ? 13
+          : 14,
 
       fontWeight: '700',
 
@@ -301,6 +373,9 @@ export const registerStyles =
 
       marginBottom:
         Spacing.md,
+
+      paddingHorizontal:
+        Spacing.sm,
 
       textShadowColor:
         'rgba(255,77,141,0.35)',
@@ -318,9 +393,15 @@ export const registerStyles =
     // ====================================
 
     registerButton: {
-      width: '100%',
+      width:
+        isTablet
+          ? '70%'
+          : '100%',
 
-      height: 56,
+      height:
+        isSmallDevice
+          ? 52
+          : 56,
 
       borderRadius:
         BorderRadius.full,
@@ -345,7 +426,10 @@ export const registerStyles =
     loginText: {
       color: '#AAAACC',
 
-      fontSize: 13,
+      fontSize:
+        isSmallDevice
+          ? 12
+          : 13,
 
       textAlign: 'center',
 
@@ -358,6 +442,16 @@ export const registerStyles =
 
     loginLink: {
       ...TextStyles.h3,
+
+      fontSize:
+        isSmallDevice
+          ? 18
+          : 22,
+
+      lineHeight:
+        isSmallDevice
+          ? 24
+          : 30,
 
       color: '#FFFFFF',
 
